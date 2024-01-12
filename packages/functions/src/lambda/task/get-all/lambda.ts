@@ -1,7 +1,7 @@
 import internal from "stream";
-import { ApiResponse } from "../../../model/responses";
+import { ApiResponse } from "src/model/responses";
 
-import { Task } from "../../../model/Task";
+import { Task } from "src/model/Task";
 
 export async function main() {
     
