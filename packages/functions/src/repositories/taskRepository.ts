@@ -5,12 +5,25 @@ import { z } from "zod"
 
 export class TaskRepository{
     private dynamoDb = new DynamoDB.DocumentClient();
-
     public async getAll(){ 
         const params = {
             TableName: Table.Tasks.tableName,
         };
         const result = (await this.dynamoDb.scan(params).promise()).Items?.map(e=>Task.parse(e))
+        return result
+    }
+
+    public async getById(id:string){
+        const params = {
+            TableName: Table.Tasks.tableName,
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: {
+                ':id': id,
+            }
+        }
+        const dbResponse = await this.dynamoDb.query(params).promise()
+        if(dbResponse.Count>1) console.log(`FOUND MORE THAN ONE ITEMS WITH ID ${id}`);
+        const result = dbResponse.Items?.map(e=>Task.parse(e))[0]
         return result
     }
 
@@ -30,6 +43,7 @@ export class TaskRepository{
             }
         };
         return await this.dynamoDb.delete(params).promise();
-        // TODO: does not return any data
     }
 }
+
+export const getTaskRepository = () => new TaskRepository();
