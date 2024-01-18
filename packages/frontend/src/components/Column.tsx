@@ -8,9 +8,12 @@ import {
   useDisclosure,
   LightMode,
 } from "@chakra-ui/react";
+
+import { Droppable } from "react-beautiful-dnd";
+
 import Icon from "./Icon";
+import Task from "./Task";
 import ModalAddTask from "./ModalAddTask";
-import Tasks from "./Tasks";
 
 import { TaskInterface, ColumnInterface } from "../types";
 
@@ -32,35 +35,53 @@ export default function Column({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <GridItem bg={bgColor} className="column">
-      <Flex flexDirection="column" gap="1rem">
-        <Card w="full">
-          <CardHeader className="column-header">
-            <Icon color={column.statusColor} />
-            <Text as="b">{column.description}</Text>
-          </CardHeader>
-        </Card>
+    <Droppable droppableId={String(column.id)}>
+      {(provided) => (
+        <GridItem bg={bgColor} className="column">
+          <Flex flexDirection="column" gap="1rem">
+            <Card w="full">
+              <CardHeader className="column-header">
+                <Icon color={column.statusColor} />
+                <Text as="b">{column.description}</Text>
+              </CardHeader>
+            </Card>
 
-        <Tasks
-          tasksForColumn={tasksForColumn}
-          tasks={tasks}
-          setTasks={setTasks}
-        />
-      </Flex>
+            <Flex
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              flexDirection="column"
+              gap="1rem"
+              maxH={{ lg: "800px", md: "320px", sm: "320px" }}
+              overflowY="auto"
+            >
+              {tasksForColumn.map((task, index) => (
+                <Task
+                  key={task.id}
+                  task={task}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                  index={index}
+                />
+              ))}
+              {provided.placeholder}
+            </Flex>
+          </Flex>
 
-      <LightMode>
-        <Button onClick={onOpen} colorScheme="teal" w="5">
-          +
-        </Button>
-      </LightMode>
+          <LightMode>
+            <Button onClick={onOpen} colorScheme="teal" w="5">
+              +
+            </Button>
+          </LightMode>
 
-      <ModalAddTask
-        isOpen={isOpen}
-        onClose={onClose}
-        curColumn={column}
-        tasks={tasks}
-        setTasks={setTasks}
-      />
-    </GridItem>
+          <ModalAddTask
+            isOpen={isOpen}
+            onClose={onClose}
+            curColumn={column}
+            tasks={tasks}
+            setTasks={setTasks}
+          />
+        </GridItem>
+      )}
+    </Droppable>
   );
 }
