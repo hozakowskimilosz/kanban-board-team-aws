@@ -12,29 +12,23 @@ import Icon from "./Icon";
 import ModalAddTask from "./ModalAddTask";
 import Tasks from "./Tasks";
 
-interface Column {
-  id: number;
-  description: string;
-  statusColor: string;
-}
-
-interface Task {
-  id: number;
-  name: string;
-  description: string;
-  columnId: number;
-}
+import { TaskInterface, ColumnInterface } from "../types";
 
 interface ColumnProps {
-  column: Column;
-}
-
-interface Props extends ColumnProps {
+  column: ColumnInterface;
   bgColor: string;
-  tasks: Task[];
+  tasks: TaskInterface[];
+  tasksForColumn: TaskInterface[];
+  setTasks: React.Dispatch<React.SetStateAction<TaskInterface[]>>;
 }
 
-export default function Column({ column, bgColor, tasks }: Props) {
+export default function Column({
+  column,
+  bgColor,
+  tasksForColumn,
+  tasks,
+  setTasks,
+}: ColumnProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -47,7 +41,11 @@ export default function Column({ column, bgColor, tasks }: Props) {
           </CardHeader>
         </Card>
 
-        <Tasks tasks={tasks} />
+        <Tasks
+          tasksForColumn={tasksForColumn}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
       </Flex>
 
       <LightMode>
@@ -59,7 +57,9 @@ export default function Column({ column, bgColor, tasks }: Props) {
       <ModalAddTask
         isOpen={isOpen}
         onClose={onClose}
-        curColumn={column.description}
+        curColumn={column}
+        tasks={tasks}
+        setTasks={setTasks}
       />
     </GridItem>
   );

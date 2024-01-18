@@ -1,18 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import TaskComponent from "./Task";
+import { TaskInterface } from "../types";
 
-interface Task {
-  id: number;
-  name: string;
-  description: string;
-  columnId: number;
+interface TasksProps {
+  tasksForColumn: TaskInterface[];
+  tasks: TaskInterface[];
+  setTasks: React.Dispatch<React.SetStateAction<TaskInterface[]>>;
 }
 
-interface TaskProps {
-  tasks: Task[];
-}
-
-export default function Tasks({ tasks }: TaskProps) {
+export default function Tasks({ tasksForColumn, tasks, setTasks }: TasksProps) {
   return (
     <Flex
       flexDirection="column"
@@ -20,8 +16,13 @@ export default function Tasks({ tasks }: TaskProps) {
       maxH={{ lg: "800px", md: "320px", sm: "320px" }}
       overflowY="auto"
     >
-      {tasks.map((task) => (
-        <TaskComponent key={task.id} task={task} />
+      {tasksForColumn.map((task) => (
+        <TaskComponent
+          key={task.id}
+          task={task}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
       ))}
     </Flex>
   );

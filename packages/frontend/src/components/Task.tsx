@@ -11,27 +11,24 @@ import { useState } from "react";
 import colors from "../../config/colors";
 import ModalRemoveTask from "./ModalRemoveTask";
 
-interface Task {
-  id: number;
-  name: string;
-  description: string;
-  columnId: number;
-}
+import { TaskInterface } from "../types";
 
 interface TaskProps {
-  task: Task;
+  task: TaskInterface;
+  tasks: TaskInterface[];
+  setTasks: React.Dispatch<React.SetStateAction<TaskInterface[]>>;
 }
 
-export default function Task({ task }: TaskProps) {
+export default function Task({ task, tasks, setTasks }: TaskProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const value = useColorModeValue(colors.lightGray, colors.veryDarkGray);
 
-  const optimaldescriptionLength = 50;
-  const descriptionLength = task.description.length;
-  const shortenedDescription = task.description
-    .split(" ")
-    .slice(0, 6)
+  const optimalDescriptionLength = 80;
+  const descriptionLength = task?.description?.length ?? 0;
+  const shortenedDescription = task?.description
+    ?.split(" ")
+    .slice(0, 15)
     .join(" ");
 
   function handleExpand() {
@@ -53,37 +50,43 @@ export default function Task({ task }: TaskProps) {
           X
         </Button>
 
-        <ModalRemoveTask isOpen={isOpen} onClose={onClose} />
+        <ModalRemoveTask
+          isOpen={isOpen}
+          onClose={onClose}
+          task={task}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
       </CardHeader>
 
-      <CardBody
-        display="flex"
-        flexDirection="column"
-        alignItems="flex-start"
-        gap="0.5rem"
-      >
-        <Text>
-          {descriptionLength > optimaldescriptionLength
-            ? isExpanded
-              ? task.description
-              : shortenedDescription
-            : task.description}
-        </Text>
+      {task?.description && (
+        <CardBody
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          gap="0.5rem"
+        >
+          <Text>
+            {descriptionLength > optimalDescriptionLength
+              ? isExpanded
+                ? task.description
+                : shortenedDescription
+              : task.description}
+          </Text>
 
-        {descriptionLength > optimaldescriptionLength ? (
-          <Button
-            size="s"
-            fontSize="s"
-            variant="outline"
-            padding="0.2em 0.5em"
-            onClick={handleExpand}
-          >
-            {isExpanded ? "show less" : "show more"}
-          </Button>
-        ) : (
-          ""
-        )}
-      </CardBody>
+          {descriptionLength > optimalDescriptionLength && (
+            <Button
+              size="s"
+              fontSize="s"
+              variant="outline"
+              padding="0.2em 0.5em"
+              onClick={handleExpand}
+            >
+              {isExpanded ? "show less" : "show more"}
+            </Button>
+          )}
+        </CardBody>
+      )}
     </Card>
   );
 }
