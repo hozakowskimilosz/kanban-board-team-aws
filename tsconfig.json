@@ -1,8 +1,9 @@
 {
   "extends": "@tsconfig/node18/tsconfig.json",
-  "exclude": ["packages"],
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node"
-  }
+    "module": "node16",
+		"moduleResolution": "node16",
+    "allowJs": true,
+  },
+  "include": ["packages/functions/src/model", "packages/functions/src/repositories"],
 }

@@ -1,6 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { Table } from "sst/node/table";
-import { Task } from "src/model/Task";
+import { Task } from "../model/Task";
 import { z } from "zod"
 
 export class TaskRepository{
