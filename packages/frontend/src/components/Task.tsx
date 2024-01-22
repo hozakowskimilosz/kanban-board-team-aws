@@ -43,6 +43,7 @@ export default function Task({ task, tasks, setTasks, index }: TaskProps) {
     <Draggable draggableId={task.id} index={index}>
       {(provided) => (
         <Card
+          onClick={() => console.log("clicked", index)}
           className="task"
           ref={provided.innerRef}
           {...provided.draggableProps}

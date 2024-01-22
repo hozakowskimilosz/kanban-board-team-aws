@@ -38,8 +38,24 @@ export default function onDragEnd(
       const [removed] = newStartTasks.splice(source.index, 1);
       removed.columnId = endColumn.id;
 
+      console.log(
+        `Task ${removed.id} has been grabbed from ${startColumn.description}`
+      );
+
       const newFinishTasks = Array.from(finishTasks);
       newFinishTasks.splice(destination.index, 0, removed);
+
+      console.log(
+        `Task ${removed.id} has been put to ${endColumn.description}`
+      );
+
+      // Find the new index of the moved task
+      const newIndex = newFinishTasks.findIndex(
+        (task) => task.id === removed.id
+      );
+      console.log(
+        `New index of task ${removed.id} is ${newIndex} and is in ${endColumn.description}`
+      );
 
       const otherTasks = tasks.filter(
         (task) =>
@@ -53,6 +69,14 @@ export default function onDragEnd(
       const newTasks = Array.from(startTasks);
       const [removed] = newTasks.splice(source.index, 1);
       newTasks.splice(destination.index, 0, removed);
+
+      console.log(
+        `Task ${removed.id} has been moved within ${startColumn.description}`
+      );
+
+      // Find the new index of the moved task
+      const newIndex = newTasks.findIndex((task) => task.id === removed.id);
+      console.log(`New index of task ${removed.id} is ${newIndex}`);
 
       const otherTasks = tasks.filter(
         (task) => task.columnId !== startColumn.id
