@@ -35,24 +35,21 @@ export default function Column({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Droppable droppableId={String(column.id)}>
-      {(provided) => (
-        <GridItem bg={bgColor} className="column">
-          <Flex flexDirection="column" gap="1rem">
-            <Card w="full">
-              <CardHeader className="column-header">
-                <Icon color={column.statusColor} />
-                <Text as="b">{column.description}</Text>
-              </CardHeader>
-            </Card>
+    <GridItem bg={bgColor} className="column">
+      <Flex flexDirection="column" gap="1rem">
+        <Card w="full">
+          <CardHeader className="column-header">
+            <Icon color={column.statusColor} />
+            <Text as="b">{column.description}</Text>
+          </CardHeader>
+        </Card>
 
+        <Droppable droppableId={String(column.id)}>
+          {(provided) => (
             <Flex
               {...provided.droppableProps}
               ref={provided.innerRef}
-              flexDirection="column"
-              gap="1rem"
-              maxH={{ lg: "800px", md: "320px", sm: "320px" }}
-              overflowY="auto"
+              className="tasks-flex"
             >
               {tasksForColumn.map((task, index) => (
                 <Task
@@ -65,23 +62,23 @@ export default function Column({
               ))}
               {provided.placeholder}
             </Flex>
-          </Flex>
+          )}
+        </Droppable>
 
-          <LightMode>
-            <Button onClick={onOpen} colorScheme="teal" w="5">
-              +
-            </Button>
-          </LightMode>
+        <LightMode>
+          <Button onClick={onOpen} colorScheme="teal" w="5">
+            +
+          </Button>
+        </LightMode>
 
-          <ModalAddTask
-            isOpen={isOpen}
-            onClose={onClose}
-            curColumn={column}
-            tasks={tasks}
-            setTasks={setTasks}
-          />
-        </GridItem>
-      )}
-    </Droppable>
+        <ModalAddTask
+          isOpen={isOpen}
+          onClose={onClose}
+          curColumn={column}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
+      </Flex>
+    </GridItem>
   );
 }
