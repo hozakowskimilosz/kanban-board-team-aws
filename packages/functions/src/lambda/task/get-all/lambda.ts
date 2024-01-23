@@ -1,11 +1,11 @@
-import { ApiResponse } from "src/model/responses";
+import { ApiResponse } from "@kanban-board-team-aws/functions/model/responses";
+import TaskRepository from "@kanban-board-team-aws/functions/repositories/taskRepository";
 
-import { TaskRepository } from "src/repositories/taskRepository";
 
-const getTaskRepository = () => new TaskRepository();
+const taskRepository = TaskRepository.getTaskRepository();
 
 export async function main() {
 
-    const result = await getTaskRepository().getAll()
+    const result = await taskRepository.getAll()
     return ApiResponse.ok(result);
 }

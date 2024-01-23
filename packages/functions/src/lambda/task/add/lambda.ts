@@ -1,18 +1,20 @@
-import { v4 as uuidv4 } from "uuid";
-import { ApiResponse } from "src/model/responses";
-import { Task } from "src/model/Task"
+import { TaskSchema } from "@kanban-board-team-aws/functions/model/Task";
+import { ApiResponse } from "@kanban-board-team-aws/functions/model/responses";
+import TaskRepository from "@kanban-board-team-aws/functions/repositories/taskRepository";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { z } from "zod";
-import { TaskRepository } from "src/repositories/taskRepository";
-const getTaskRepository = () => new TaskRepository();
+import { v4 as uuidv4 } from "uuid";
+
+
+const taskRepository = TaskRepository.getTaskRepository();
 
 export async function main(e: APIGatewayProxyEventV2) {
     const body=JSON.parse(e.body??"")
     try {
         body.id = uuidv4();
-        const task = Task.parse(body)
+        const task = TaskSchema.parse(body)
         
-        await getTaskRepository().add(task);
+        await taskRepository.add(task);
         const res = "Added task to the table."
         return ApiResponse.ok(res)
     }catch(err){

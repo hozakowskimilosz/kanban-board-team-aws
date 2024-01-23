@@ -9,20 +9,16 @@
     "deploy": "sst deploy",
     "remove": "sst remove",
     "console": "sst console",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
     "aws-cdk-lib": "2.110.1",
     "constructs": "10.3.0",
-    "sst": "^2.39.2",
-    "typescript": "^5.3.3"
+    "sst": "^2.39.2"
   },
   "workspaces": [
     "packages/*"
-  ],
-  "dependencies": {
-    "uuid": "^9.0.1",
-    "zod": "^3.22.4"
-  }
+  ]
 }
