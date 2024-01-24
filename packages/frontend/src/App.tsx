@@ -32,6 +32,32 @@ function App() {
     getTasks();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const ctrlPressed = event.ctrlKey || event.metaKey; // metaKey is for Mac
+      const kPressed = event.key.toLocaleLowerCase() === "z";
+      const yPressed = event.key.toLocaleLowerCase() === "y";
+
+      if (ctrlPressed && kPressed) {
+        console.log("kliklnieto klawiszami ctrl z");
+      }
+
+      if (ctrlPressed && yPressed) {
+        console.log("kliknieto ctrl + y");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // sessionStorage.setItem("tasks", JSON.stringify(tasks));
+  // const data = sessionStorage.getItem("tasks");
+  // console.log(JSON.parse(data));
+
   return (
     <>
       <Flex justify="space-between" align="center">

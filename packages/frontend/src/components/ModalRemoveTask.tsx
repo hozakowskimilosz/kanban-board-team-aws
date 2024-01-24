@@ -9,8 +9,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useRef } from "react";
-import { deleteTask } from "../api/endpoints";
 import { TaskInterface } from "../types";
+import callEndpoint from "../utils/callEndpoint";
 
 interface ModalRemoveTaskProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export default function ModalRemoveTask({
   const toast = useToast();
 
   function handleRemoveTask() {
-    deleteTask(task.id)
+    callEndpoint("delete", "button", undefined, task.id)
       .then(() => {
         const updatedTasks = tasks.filter((t) => t.id !== task.id);
         setTasks(updatedTasks);
@@ -42,6 +42,7 @@ export default function ModalRemoveTask({
         });
       })
       .catch((err) => console.error(err));
+
     onClose();
   }
 

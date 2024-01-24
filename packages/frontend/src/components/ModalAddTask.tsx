@@ -16,10 +16,10 @@ import {
 } from "@chakra-ui/react";
 import columns from "../../config/columns";
 import { useState } from "react";
-import { addTask } from "../api/endpoints";
 import { v4 as uuidv4 } from "uuid";
 
 import { TaskInterface, ColumnInterface } from "../types";
+import callEndpoint from "../utils/callEndpoint";
 
 interface ModalAddTaskProps {
   isOpen: boolean;
@@ -56,7 +56,7 @@ export default function ModalAddTask({
       columnId: selectedColumnId,
     };
 
-    addTask(newTask)
+    callEndpoint("add", "button", newTask)
       .then(() => {
         setTasks([...tasks, newTask]),
           toast({ title: "Added a task", status: "success", isClosable: true });
