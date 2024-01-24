@@ -56,10 +56,16 @@ export default function ModalAddTask({
       columnId: selectedColumnId,
     };
 
+    const sessionStorageData = sessionStorage.getItem("actions");
+
     callEndpoint("add", "button", newTask)
       .then(() => {
         setTasks([...tasks, newTask]),
-          toast({ title: "Added a task", status: "success", isClosable: true });
+          toast({ title: "Added a task", status: "success", isClosable: true }),
+          sessionStorage.setItem(
+            "actions",
+            JSON.stringify([...sessionStorageData, "add"])
+          );
       })
       .catch((err) => console.error(err));
 

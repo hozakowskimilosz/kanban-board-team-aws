@@ -54,10 +54,6 @@ function App() {
     };
   }, []);
 
-  // sessionStorage.setItem("tasks", JSON.stringify(tasks));
-  // const data = sessionStorage.getItem("tasks");
-  // console.log(JSON.parse(data));
-
   return (
     <>
       <Flex justify="space-between" align="center">

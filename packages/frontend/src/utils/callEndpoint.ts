@@ -7,7 +7,6 @@ export default async function callEndpoint(
   task?: TaskInterface,
   id?: string
 ) {
-  console.log(triggeredBy);
   switch (endpoint) {
     case "add":
       if (!task) throw new Error("A task must be provided");
