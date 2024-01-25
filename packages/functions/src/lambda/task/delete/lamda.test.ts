@@ -4,7 +4,7 @@ import { main } from "./lambda"
 import { Task } from '@kanban-board-team-aws/functions/model/Task';
 import TaskRepository from '@kanban-board-team-aws/functions/repositories/taskRepository';
 
-const taskMock = {id: "01234567-89ab-cdef-0123-456789abcdef",name: "testName",description : "testDesc",columnId: 1,} as Task;
+const taskMock = {id: "01234567-89ab-cdef-0123-456789abcdef",name: "testName",description : "testDesc",columnId: 1, order: 1} as Task;
 
 describe("/task/delete tests",  ()=>{
     
@@ -27,7 +27,7 @@ describe("/task/delete tests",  ()=>{
         const result = await main(event) 
 
         // THEN
-        expect(result?.statusCode ?? 0).toBe(200)
+        expect(result?.statusCode).toBe(200)
         expect(JSON.parse(result?.body ?? "")).toBe(`Deletion succesful.`)
 })
 
@@ -44,7 +44,7 @@ describe("/task/delete tests",  ()=>{
         const result = await main(event)
 
         // THEN
-        expect(result?.statusCode ?? 0).toBe(400)
+        expect(result?.statusCode).toBe(400)
     })
 
     test("should return status code 404", async () => {
@@ -62,7 +62,7 @@ describe("/task/delete tests",  ()=>{
         const result = await main(event)
 
         // THEN
-        expect(result?.statusCode ?? 0).toBe(404)
+        expect(result?.statusCode).toBe(404)
     })
 
     test("should return status code 500", async () => {
@@ -80,6 +80,6 @@ describe("/task/delete tests",  ()=>{
         const result = await main(event)
 
         // THEN
-        expect(result?.statusCode ?? 0).toBe(500)
+        expect(result?.statusCode).toBe(500)
     })
 })

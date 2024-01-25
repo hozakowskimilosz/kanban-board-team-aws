@@ -1,30 +1,37 @@
 import { afterEach,  describe, expect, test, vi} from 'vitest';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { main } from "./lambda"
+import { Task } from '@kanban-board-team-aws/functions/model/Task';
 import TaskRepository from '@kanban-board-team-aws/functions/repositories/taskRepository';
 
-const requestBodyMock = {name: "testName",description : "testDesc",columnId: 1, order: 1};
+const taskMock : Task[]= [{id: "7e76c64a-7270-4a65-8f17-fe9ac3187b1a",name: "name",description : "testDesc",columnId: 1, order: 1}];
 
-describe("/task/add tests",  ()=>{
-    
+describe("/task/getByColumnId tests", ()=>{
+
     afterEach(_=>{
         vi.restoreAllMocks()
     })
-    
-    test(`should return status code 200`, async () => {
+
+    test(`should return status code 200 and tasks with provided columnId`, async ()=>{
+
+
+        
         // GIVEN
-        vi.spyOn(TaskRepository.prototype, "put").mockResolvedValue()
+        vi.spyOn(TaskRepository.prototype, "getByColumnId").mockResolvedValue(taskMock)
 
         const event: APIGatewayProxyEventV2 = {
-            body: JSON.stringify(requestBodyMock)
+            queryStringParameters: {
+                columnId: taskMock[0].columnId.toString(),
+            }
         } as any
-        //WHEN
-        const result = await main(event) 
+
+        // WHEN
+        const result = await main(event)
 
         // THEN
         expect(result?.statusCode).toBe(200)
-        expect(JSON.parse(result?.body ?? "")).toBe(`Added task to the table.`)
-})
+        expect(JSON.parse(result?.body ?? "")).toStrictEqual(taskMock)
+    })
 
     test.each([
         ["missing body fields", 
@@ -32,15 +39,13 @@ describe("/task/add tests",  ()=>{
         ],
         ["incorrect body fields",
             {
-                name: requestBodyMock.name,
-                description: requestBodyMock.description,
                 columnId: "this shouldn't be a string",
             }
         ]
-    ])("should return status code 400 - %s", async (description, body)=>{       
+    ])(`should return status code 400 - %s`, async (description, body)=>{       
         // GIVEN
-        vi.spyOn(TaskRepository.prototype, "put").mockResolvedValue()
-        
+        vi.spyOn(TaskRepository.prototype, "getByColumnId").mockResolvedValue(taskMock)
+
         const event: APIGatewayProxyEventV2 = {
             body: JSON.stringify(body)
         } as any
@@ -54,10 +59,12 @@ describe("/task/add tests",  ()=>{
 
     test("should return status code 500", async () => {
         // GIVEN
-        vi.spyOn(TaskRepository.prototype, "put").mockRejectedValue(undefined)
+        vi.spyOn(TaskRepository.prototype, "getByColumnId").mockRejectedValue(undefined)
 
         const event: APIGatewayProxyEventV2 = {
-            body: JSON.stringify(requestBodyMock)
+            queryStringParameters: {
+                columnId: taskMock[0].columnId.toString()
+            }
         } as any
 
         //WHEN
