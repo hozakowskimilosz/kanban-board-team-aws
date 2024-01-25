@@ -1,6 +1,7 @@
-import { Api, StackContext, Table } from "sst/constructs"
+import { Api, StackContext, Table, Bucket } from "sst/constructs"
 
 export function StorageStack({stack}: StackContext){
+  const bucket = new Bucket(stack, 'Uploads')
   const table = new Table(stack, "Tasks", {
     fields: {
       id: "string",
@@ -12,5 +13,8 @@ export function StorageStack({stack}: StackContext){
     primaryIndex: { partitionKey: "id" },
   });
 
-  return table;
+  return {
+    table: table,
+    bucket: bucket
+  };
 }
