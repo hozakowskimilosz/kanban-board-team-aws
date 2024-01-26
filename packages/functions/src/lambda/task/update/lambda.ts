@@ -19,8 +19,8 @@ export async function main(e: APIGatewayProxyEventV2) {
         if (!oldTask) return ApiResponse.notFound(`Task with id ${body.id} was not found!`);
         const newTask = TaskSchema.parse({...oldTask,...body})
 
-        if(body.columnId || body.order){
-
+        if(newTask.columnId!=oldTask.columnId || newTask.order!=oldTask.order){
+            
             const extendedQuery = {
                 fields: {
                     ":id": newTask.id
