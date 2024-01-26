@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { TaskInterface } from "../types";
 import { useState } from "react";
+import { updateTask } from "../api/endpoints";
 
 interface DrawerEditTaskProps {
   isOpen: boolean;
@@ -48,9 +49,15 @@ export default function DrawerEditTask({
       ...task,
       name: updatedName,
       description: updatedDescription,
+      order: task.order,
     };
 
-    onUpdateTask(updatedTask);
+    updateTask(updatedTask)
+      .then(() => {
+        onUpdateTask(updatedTask);
+      })
+      .catch((err) => console.error(err));
+
     setIsNameEmpty(false);
     onClose();
   }

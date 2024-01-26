@@ -1,11 +1,12 @@
 import { DropResult } from "react-beautiful-dnd";
 import { TaskInterface } from "../types";
 import columnsFromConfig from "../../config/columns";
+import { updateTask } from "../api/endpoints";
 
-export default function onDragEnd(
+export default async function onDragEnd(
   result: DropResult,
   tasks: TaskInterface[],
-  setTasks: (tasks: TaskInterface[]) => void
+  setTasks: React.Dispatch<React.SetStateAction<TaskInterface[]>>
 ) {
   const columns = columnsFromConfig;
 
@@ -35,11 +36,13 @@ export default function onDragEnd(
 
     if (startColumn !== endColumn) {
       const newStartTasks = Array.from(startTasks);
-      const [removed] = newStartTasks.splice(source.index, 1);
-      removed.columnId = endColumn.id;
+      const [movedTask] = newStartTasks.splice(source.index, 1);
+
+      movedTask.columnId = endColumn.id;
+      movedTask.order = destination.index;
 
       const newFinishTasks = Array.from(finishTasks);
-      newFinishTasks.splice(destination.index, 0, removed);
+      newFinishTasks.splice(destination.index, 0, movedTask);
 
       const otherTasks = tasks.filter(
         (task) =>
@@ -48,19 +51,28 @@ export default function onDragEnd(
 
       const newTasks = [...otherTasks, ...newStartTasks, ...newFinishTasks];
 
+      updateTask(movedTask)
+        .then(() => setTasks(newTasks))
+        .catch((err) => console.error(err));
       setTasks(newTasks);
     } else {
-      const newTasks = Array.from(startTasks);
-      const [removed] = newTasks.splice(source.index, 1);
-      newTasks.splice(destination.index, 0, removed);
+      const newStartTasks = Array.from(startTasks);
+      const [movedTask] = newStartTasks.splice(source.index, 1);
 
-      const otherTasks = tasks.filter(
-        (task) => task.columnId !== startColumn.id
-      );
+      movedTask.columnId = endColumn.id;
+      movedTask.order = destination.index;
 
-      const updatedTasks = [...otherTasks, ...newTasks];
+      newStartTasks.splice(destination.index, 0, movedTask);
 
-      setTasks(updatedTasks);
+      const newTasks = [
+        ...tasks.filter((task) => task.columnId !== startColumn.id),
+        ...newStartTasks.sort((a, b) => a.order - b.order),
+      ];
+
+      updateTask(movedTask)
+        .then(() => setTasks(newTasks))
+        .catch((err) => console.error(err));
+      setTasks(newTasks);
     }
   }
 }
