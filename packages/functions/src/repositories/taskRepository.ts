@@ -19,7 +19,9 @@ export default class TaskRepository{
         const params = {
             TableName: Table.Tasks.tableName,
         };
-        const result = (await this.dynamoDb.scan(params).promise()).Items?.map(e=>TaskSchema.parse(e) as Task)
+        const dbResponse = await this.dynamoDb.scan(params).promise()
+        const result = dbResponse.Items?.map(e=>TaskSchema.parse(e) as Task)
+        result?.sort((a,b)=>a.order-b.order)
         return result ?? [];
     }
 
@@ -37,12 +39,43 @@ export default class TaskRepository{
         return result
     }
 
-    public async add(task : Task): Promise<void>{ 
+    public async put(task : Task): Promise<void>{ 
         const params = {
             TableName: Table.Tasks.tableName,
             Item:task,
         };
         await this.dynamoDb.put(params).promise();
+    }
+
+    public async getByColumnId(columnId: number, extendedQuery?: {fields: {}, query: string}): Promise<Task[]> {
+        const params = {
+            TableName: Table.Tasks.tableName,
+            FilterExpression: `columnId = :columnId ${extendedQuery?.query??""}`,
+            ExpressionAttributeValues: {...{
+                ":columnId" : columnId,
+                ...extendedQuery?.fields??{},
+            }}
+        }
+        const dbResponse = await this.dynamoDb.scan(params).promise()
+        const result = dbResponse.Items?.map(e=>TaskSchema.parse(e) as Task)
+        result?.sort((a,b)=>a.order-b.order)
+        return result ?? [];
+    }
+
+    public async batchWrite(tasks: Task[]){
+        const params = {
+            RequestItems: {
+                [(Table.Tasks.tableName)] :
+                    tasks.map(e=>(
+                        {
+                            PutRequest: {
+                                Item: e
+                            }
+                        }
+                    ))
+            }
+        }
+        await this.dynamoDb.batchWrite(params).promise()
     }
 
     public async delete(id:string): Promise<void> { 
