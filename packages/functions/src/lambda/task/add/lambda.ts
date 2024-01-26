@@ -15,6 +15,8 @@ export async function main(e: APIGatewayProxyEventV2) {
         body.id = uuidv4();
         const task = TaskSchema.parse(body)
         
+
+        
         await taskRepository.put(task);
         const res = "Added task to the table."
         return ApiResponse.ok(res)
