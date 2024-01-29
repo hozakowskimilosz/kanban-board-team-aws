@@ -35,9 +35,13 @@ function App() {
   return (
     <>
       <Flex justify="space-between" align="center">
-        <Heading display="flex" gap="1rem" size={["md", "lg", "xl"]}>
-          <Text>Kanban Board</Text>
-          <Text className="colored-header">AWS</Text>
+        <Heading display="flex" flexDirection="row" size={["md", "lg", "xl"]}>
+          <Text>
+            <Text display="inline" className="colored-header">
+              AWS
+            </Text>
+            ome Kanban
+          </Text>
         </Heading>
 
         <Button onClick={toggleColorMode}>
