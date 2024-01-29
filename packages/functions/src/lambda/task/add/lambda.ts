@@ -15,7 +15,7 @@ export async function main(e: APIGatewayProxyEventV2) {
     const task = TaskSchema.parse(body);
 
     await taskRepository.put(task);
-    return ApiResponse.ok(body.id);
+    return ApiResponse.ok(task);
   } catch (err) {
     if (err instanceof z.ZodError) {
       const res = err.issues.map((e) => `${e.message} at field ${e.path}`);

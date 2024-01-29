@@ -7,6 +7,7 @@ import {
   useColorMode,
   useColorModeValue,
   SimpleGrid,
+  useToast,
 } from "@chakra-ui/react";
 import columnsFromConfig from "../config/columns";
 import colors from "../config/colors";
@@ -16,6 +17,7 @@ import { fetchAllTasks } from "./api/endpoints";
 import { useEffect, useState } from "react";
 import { TaskInterface } from "./types";
 import onDragEnd from "./utils/onDragEnd";
+import { redo, undo } from "./utils/callEndpoint";
 
 function App() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -24,26 +26,57 @@ function App() {
   const [columns] = useState(columnsFromConfig);
   const [tasks, setTasks] = useState<TaskInterface[]>([]);
 
+  const toast = useToast();
+
+  const tasksCopied: TaskInterface[] = [];
+
   useEffect(() => {
     const getTasks = async () => {
       const fetchedTasks = await fetchAllTasks();
       setTasks(fetchedTasks);
+      // tasksCopied.splice(tasksCopied.length);
+      tasksCopied.push(...tasks);
     };
     getTasks();
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
       const ctrlPressed = event.ctrlKey || event.metaKey; // metaKey is for Mac
-      const kPressed = event.key.toLocaleLowerCase() === "z";
+      const zPressed = event.key.toLocaleLowerCase() === "z";
       const yPressed = event.key.toLocaleLowerCase() === "y";
-
-      if (ctrlPressed && kPressed) {
-        console.log("kliklnieto klawiszami ctrl z");
+      const tasks = await fetchAllTasks();
+      if (ctrlPressed && zPressed) {
+        await undo(tasks)
+          .then((e) => {
+            console.log(tasks);
+            console.log(e);
+            if (e === undefined) return;
+            setTasks(e),
+              toast({
+                title: "Change undone",
+                status: "success",
+                isClosable: true,
+              });
+          })
+          .catch((err) => console.error(err));
       }
 
       if (ctrlPressed && yPressed) {
-        console.log("kliknieto ctrl + y");
+        const redoedItem = await redo(tasks)
+          .then((e) => {
+            if (e === undefined) return;
+            console.log(tasks);
+            console.log(e);
+            setTasks(e),
+              toast({
+                title: "Change reverted",
+                status: "success",
+                isClosable: true,
+              });
+          })
+          .catch((err) => console.error(err));
+        console.log(redoedItem);
       }
     };
 

@@ -52,7 +52,7 @@ export default async function onDragEnd(
       const newTasks = [...otherTasks, ...newStartTasks, ...newFinishTasks];
 
       updateTask(movedTask)
-        .then(() => setTasks(newTasks))
+        .then((e) => setTasks(newTasks))
         .catch((err) => console.error(err));
       setTasks(newTasks);
     } else {

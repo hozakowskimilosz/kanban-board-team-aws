@@ -93,6 +93,7 @@ export default function Task({ task, tasks, setTasks, index }: TaskProps) {
               isOpen={isDrawerOpen}
               onClose={onDrawerClose}
               task={task}
+              tasks={tasks}
               name={name}
               description={description}
               onUpdateTask={handleUpdateTask}

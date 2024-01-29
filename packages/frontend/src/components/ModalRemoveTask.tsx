@@ -31,10 +31,9 @@ export default function ModalRemoveTask({
   const toast = useToast();
 
   function handleRemoveTask() {
-    callEndpoint("delete", "button", undefined, task.id)
-      .then(() => {
-        const updatedTasks = tasks.filter((t) => t.id !== task.id);
-        setTasks(updatedTasks);
+    callEndpoint(tasks, "delete", "button", undefined, task.id)
+      .then((e) => {
+        setTasks(e);
         toast({
           title: "Removed a task",
           status: "warning",

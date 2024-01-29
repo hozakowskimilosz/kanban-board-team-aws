@@ -45,30 +45,24 @@ export default function ModalAddTask({
 
   const toast = useToast();
 
-  function handleAddTask() {
+  async function handleAddTask() {
     if (!name) {
       setIsNameEmpty(true);
       return;
     }
 
     const newTask = {
-      id: uuidv4(),
+      id: "",
       name: name,
       description: description,
       columnId: selectedColumnId,
       order: tasksForColumn.length,
     };
 
-    const sessionStorageData = sessionStorage.getItem("actions");
-
-    callEndpoint("add", "button", newTask)
-      .then(() => {
-        setTasks([...tasks, newTask]),
-          toast({ title: "Added a task", status: "success", isClosable: true }),
-          sessionStorage.setItem(
-            "actions",
-            JSON.stringify([...sessionStorageData, "add"])
-          );
+    await callEndpoint(tasks, "add", "button", newTask)
+      .then((e: TaskInterface[]) => {
+        setTasks(e),
+          toast({ title: "Added a task", status: "success", isClosable: true });
       })
       .catch((err) => console.error(err));
 

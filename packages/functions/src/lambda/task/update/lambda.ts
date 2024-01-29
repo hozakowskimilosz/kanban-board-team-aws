@@ -12,9 +12,9 @@ export async function main(e: APIGatewayProxyEventV2) {
   try {
     e.body = JSON.parse(e.body ?? "");
     const body = UpdateTaskEventSchema.parse(e).body;
-    const oldTask = await taskRepository.getById(body.id);
-    if (!oldTask)
-      return ApiResponse.notFound(`Task with id ${body.id} was not found!`);
+    const oldTask = (await taskRepository.getById(body.id)) ?? body;
+    // if (!oldTask) oldTask = newTask;
+    // return ApiResponse.notFound(`Task with id ${body.id} was not found!`);
     const newTask = TaskSchema.parse({ ...oldTask, ...body });
 
     if (
@@ -53,8 +53,7 @@ export async function main(e: APIGatewayProxyEventV2) {
 
     await taskRepository.put(newTask);
 
-    const res = "Updated task.";
-    return ApiResponse.ok(res);
+    return ApiResponse.ok(newTask);
   } catch (err) {
     if (err instanceof z.ZodError) {
       const res = err.issues.map((e) => `${e.message} at field ${e.path}`);

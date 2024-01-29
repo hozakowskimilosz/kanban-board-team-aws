@@ -17,11 +17,13 @@ import {
 import { TaskInterface } from "../types";
 import { useState } from "react";
 import { updateTask } from "../api/endpoints";
+import callEndpoint from "../utils/callEndpoint";
 
 interface DrawerEditTaskProps {
   isOpen: boolean;
   onClose: () => void;
   task: TaskInterface;
+  tasks: TaskInterface[];
   name: string;
   description: string;
   onUpdateTask: (updatedTask: TaskInterface) => void;
@@ -31,6 +33,7 @@ export default function DrawerEditTask({
   isOpen,
   onClose,
   task,
+  tasks,
   name,
   description,
   onUpdateTask,
@@ -39,7 +42,7 @@ export default function DrawerEditTask({
   const [updatedDescription, setUpdatedDescription] = useState(description);
   const [isNameEmpty, setIsNameEmpty] = useState(false);
 
-  function handleEditTask() {
+  async function handleEditTask() {
     if (!updatedName) {
       setIsNameEmpty(true);
       return;
@@ -52,9 +55,9 @@ export default function DrawerEditTask({
       order: task.order,
     };
 
-    updateTask(updatedTask)
-      .then(() => {
-        onUpdateTask(updatedTask);
+    await callEndpoint(tasks, "update", "button", updatedTask)
+      .then((e) => {
+        onUpdateTask(e);
       })
       .catch((err) => console.error(err));
 
