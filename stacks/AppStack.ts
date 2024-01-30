@@ -6,11 +6,10 @@ function createApi(stack: Stack) {
 
   const table = use(StorageStack).table;
   const bucket = use(StorageStack).bucket
-
+  
   return new Api(stack, "Api", {
     defaults: {
       function: {
-        // Bind the table name to our API
         bind: [table, bucket],
       },
     },
