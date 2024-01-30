@@ -10,12 +10,32 @@ import {
   LightMode,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Auth } from "aws-amplify";
 import { useState } from "react";
+import config from "../config";
 
 export default function LoginPanel() {
-  const [login, setLogin] = useState("");
+  const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  async function handleSubmit() {
+    if (!mail || !password) return;
+
+    try {
+      await Auth.signIn(mail, password);
+      alert("Logged in");
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert(String(error));
+      }
+    }
+
+    onClose();
+  }
 
   return (
     <Box display="flex" alignItems="center" gap="1rem">
@@ -32,17 +52,17 @@ export default function LoginPanel() {
             <FormControl display="flex" alignItems="center" gap="1rem">
               <Box display="flex" alignItems="center">
                 <Input
-                  type="text"
-                  id="login"
-                  value={login}
-                  onChange={(e) => setLogin(e.target.value)}
-                  placeholder="Login"
+                  type="mail"
+                  id="mail"
+                  value={mail}
+                  onChange={(e) => setMail(e.target.value)}
+                  placeholder="Mail"
                 />
               </Box>
 
               <Box display="flex" alignItems="center">
                 <Input
-                  type="password"
+                  type="text"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -51,7 +71,7 @@ export default function LoginPanel() {
               </Box>
 
               <LightMode>
-                <Button colorScheme="teal" size="md" onClick={onClose}>
+                <Button colorScheme="teal" size="md" onClick={handleSubmit}>
                   Login
                 </Button>
               </LightMode>
