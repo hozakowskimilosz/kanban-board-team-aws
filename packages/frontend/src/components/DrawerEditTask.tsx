@@ -13,9 +13,12 @@ import {
   Input,
   LightMode,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { TaskInterface } from "../types";
 import { useState } from "react";
+import { updateTask } from "../api/endpoints";
+import FileInput from "./FileInput";
 
 interface DrawerEditTaskProps {
   isOpen: boolean;
@@ -38,6 +41,8 @@ export default function DrawerEditTask({
   const [updatedDescription, setUpdatedDescription] = useState(description);
   const [isNameEmpty, setIsNameEmpty] = useState(false);
 
+  const toast = useToast();
+
   function handleEditTask() {
     if (!updatedName) {
       setIsNameEmpty(true);
@@ -48,9 +53,30 @@ export default function DrawerEditTask({
       ...task,
       name: updatedName,
       description: updatedDescription,
+      order: task.order,
     };
 
-    onUpdateTask(updatedTask);
+    const promise = updateTask(updatedTask)
+      .then(() => {
+        onUpdateTask(updatedTask);
+      })
+      .catch((err) => console.error(err));
+
+    toast.promise(promise, {
+      success: {
+        title: "Task Edited Successfully",
+        description: "Your changes have been saved successfully.",
+      },
+      error: {
+        title: "Unable to Edit Task",
+        description: "Oops! Something went wrong while editing your task.",
+      },
+      loading: {
+        title: "Editing Task",
+        description: "Please wait while we save your changes.",
+      },
+    });
+
     setIsNameEmpty(false);
     onClose();
   }
@@ -80,8 +106,12 @@ export default function DrawerEditTask({
               <Textarea
                 value={updatedDescription}
                 onChange={(e) => setUpdatedDescription(e.target.value)}
-                h="75dvh"
               />
+            </Box>
+
+            <Box>
+              <FormLabel>Media for task</FormLabel>
+              <FileInput />
             </Box>
           </FormControl>
         </DrawerBody>
