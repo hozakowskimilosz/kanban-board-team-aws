@@ -4,11 +4,11 @@ import {App, Stack} from "aws-cdk-lib";
 
 function createApi(stack: Stack) {
 
-  const {table, bucket, } = use(StorageStack)
+  const table = use(StorageStack).table;
+  const bucket = use(StorageStack).bucket
   
   return new Api(stack, "Api", {
     defaults: {
-      authorizer: "iam",
       function: {
         bind: [table, bucket],
       },
@@ -38,13 +38,11 @@ export function AppStack({ stack, app }: StackContext) {
 
   const api = createApi(stack);
 
-  const site = createFrontend(stack, api);
+  const site = createFrontend(stack, api, app);
 
   // Show the URLs in the output
   stack.addOutputs({
     SiteUrl: site.url,
     ApiEndpoint: api.url,
   });
-
-  return {api};
 }
