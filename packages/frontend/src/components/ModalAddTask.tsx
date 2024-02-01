@@ -42,6 +42,7 @@ export default function ModalAddTask({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedColumnId, setSelectedColumnId] = useState(curColumn.id);
+  const [imageSrc, setImageSrc] = useState("");
   const [isNameEmpty, setIsNameEmpty] = useState(false);
 
   const toast = useToast();
@@ -57,8 +58,11 @@ export default function ModalAddTask({
       name: name,
       description: description,
       columnId: selectedColumnId,
+      imageSrc: imageSrc,
       order: tasksForColumn.length,
     };
+
+    console.log(newTask);
 
     const promise = addTask(newTask)
       .then(() => {
@@ -130,7 +134,7 @@ export default function ModalAddTask({
             ))}
           </Select>
 
-          <FileInput />
+          <FileInput imageSrc={imageSrc} setImageSrc={setImageSrc} />
         </ModalBody>
 
         <ModalFooter>
