@@ -42,7 +42,10 @@ export default function ModalAddTask({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedColumnId, setSelectedColumnId] = useState(curColumn.id);
-  const [imageSrc, setImageSrc] = useState("");
+
+  const [fileSrc, setFileSrc] = useState("");
+  const [fileName, setFileName] = useState("");
+
   const [isNameEmpty, setIsNameEmpty] = useState(false);
 
   const toast = useToast();
@@ -58,7 +61,8 @@ export default function ModalAddTask({
       name: name,
       description: description,
       columnId: selectedColumnId,
-      imageSrc: imageSrc,
+      fileSrc: fileSrc,
+      fileName: fileName,
       order: tasksForColumn.length,
     };
 
@@ -134,7 +138,11 @@ export default function ModalAddTask({
             ))}
           </Select>
 
-          <FileInput imageSrc={imageSrc} setImageSrc={setImageSrc} />
+          <FileInput
+            fileSrc={fileSrc}
+            setFileSrc={setFileSrc}
+            setFileName={setFileName}
+          />
         </ModalBody>
 
         <ModalFooter>

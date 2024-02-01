@@ -1,23 +1,33 @@
 import { ChangeEvent, useState } from "react";
 
 interface FileInputProps {
-  imageSrc: string;
-  setImageSrc: React.Dispatch<React.SetStateAction<string>>;
+  fileSrc: string;
+  setFileSrc: React.Dispatch<React.SetStateAction<string>>;
+  setFileName: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function FileInput({ imageSrc, setImageSrc }: FileInputProps) {
+export default function FileInput({
+  fileSrc,
+  setFileSrc,
+  setFileName,
+}: FileInputProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+    const files = e.target.files;
+
+    if (files) {
+      const file = files[0];
+
+      setSelectedFile(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImageSrc(reader.result as string);
+        setFileSrc(reader.result as string);
+        setFileName(file.name);
       };
 
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -28,7 +38,7 @@ export default function FileInput({ imageSrc, setImageSrc }: FileInputProps) {
         onChange={handleFileChange}
         accept=".jpg, .jpeg, .png, .gif, .svg, .txt, .doc, .docx, .pdf"
       />
-      {selectedFile && <img src={imageSrc} alt="preview" />}
+      {selectedFile && <img src={fileSrc} alt="preview" />}
     </>
   );
 }
