@@ -7,13 +7,18 @@
     "typecheck": "tsc -noEmit"
   },
   "dependencies": {
+    "file-type": "^19.0.0",
+    "js-base64": "^3.7.6",
+    "stream-to-promise": "^3.0.0",
     "uuid": "^9.0.1",
     "vite-tsconfig-paths": "^4.3.1",
+    "web-file-polyfill": "github:web-std/file",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.131",
     "@types/node": "^20.10.7",
+    "@types/stream-to-promise": "^2.2.4",
     "@types/uuid": "^9.0.7",
     "sst": "^2.39.2",
     "vitest": "^1.2.1"

@@ -18,7 +18,8 @@ function createApi(stack: Stack) {
       "GET /task/get-all": "packages/functions/src/lambda/task/get-all/lambda.main",
       "DELETE /task/delete": "packages/functions/src/lambda/task/delete/lambda.main",
       "GET /task/getByColumnId": "packages/functions/src/lambda/task/getByColumnId/lambda.main",
-      "PUT /task/update": "packages/functions/src/lambda/task/update/lambda.main"
+      "PUT /task/update": "packages/functions/src/lambda/task/update/lambda.main",
+      "PUT /file/upload": "packages/functions/src/lambda/file/upload/lambda.main",
     },
   });
 }

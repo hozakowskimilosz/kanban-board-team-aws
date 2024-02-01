@@ -1,8 +1,8 @@
 import { Bucket } from "sst/node/bucket";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid"
-
+import streamToPromise from 'stream-to-promise';
 
 
 export default class filesRepository{
@@ -18,22 +18,43 @@ export default class filesRepository{
         return new filesRepository(S3Bucket);
     }
 
-    public async uploadFile(url:string, file: File) : Promise<Response> {
-        return await fetch(url, {
-            body: file,
-            method: "PUT",
-            headers: {
-              "Content-Type": file.type,
-              "Content-Disposition": `attachment; filename="${file.name}"`,
-            },
-          });
+    public async getFile(key: string){
+        const params = {
+            Bucket: Bucket.Uploads.bucketName,
+            Key: key,
+        };
+        const command = new GetObjectCommand(params);
+        const response = await this.S3Bucket.send(command);
+    
+        // Convert the stream to a Buffer
+        const buffer = await streamToPromise(response.Body);
+    
+        // Convert the Buffer to a base64 string
+        const base64File = buffer.toString('base64');
+    
+        return base64File;
+    }
+
+    public async uploadFile(base64File: string) : Promise<{response: Response, key: string}> {
+        const bucketSpace = await this.getBucketSpace()
+        const headers = { 'Content-Type': 'multipart/form-data' };
+        const formData = new FormData();
+        formData.append('file', base64File);
+        return {
+            response: await fetch(bucketSpace.url, {
+                method: "PUT",
+                headers: headers,
+                body: formData,
+            }),
+            key: bucketSpace.id
+        }
     }
     
     public async deleteFile(key:string) {
         //to finish someday
     }
     
-    public async getBucketSpace() {
+    private async getBucketSpace() {
         const id = uuidv4();
         const command = new PutObjectCommand({
             ACL: "public-read",
