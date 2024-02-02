@@ -1,7 +1,7 @@
 import { DropResult } from "react-beautiful-dnd";
 import { TaskInterface } from "../types";
 import columnsFromConfig from "../../config/columns";
-import { updateTask } from "../api/endpoints";
+import callEndpoint from "./callEndpoint";
 
 export default async function onDragEnd(
   result: DropResult,
@@ -51,8 +51,8 @@ export default async function onDragEnd(
 
       const newTasks = [...otherTasks, ...newStartTasks, ...newFinishTasks];
 
-      updateTask(movedTask)
-        .then(() => setTasks(newTasks))
+      callEndpoint("update", "drag", movedTask)
+        .then((e) => setTasks(e))
         .catch((err) => console.error(err));
       setTasks(newTasks);
     } else {
@@ -69,8 +69,8 @@ export default async function onDragEnd(
         ...newStartTasks.sort((a, b) => a.order - b.order),
       ];
 
-      updateTask(movedTask)
-        .then(() => setTasks(newTasks))
+      callEndpoint("update", "drag", movedTask)
+        .then((e) => setTasks(e))
         .catch((err) => console.error(err));
       setTasks(newTasks);
     }
