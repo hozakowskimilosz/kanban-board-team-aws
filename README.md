@@ -1,4 +1,4 @@
-# Kanban Board WebApp on AWS
+# AWSome Kanban Board
 
 Welcome to the repository of our web application, a Kanban board built on Amazon Web Services (AWS). This README will guide you through the process of setting up and installing this application.
 
