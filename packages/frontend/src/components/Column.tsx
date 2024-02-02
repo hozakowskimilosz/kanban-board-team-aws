@@ -91,9 +91,7 @@ export default function Column({
           isOpen={isOpen}
           onClose={onClose}
           curColumn={column}
-          tasks={tasks}
           setTasks={setTasks}
-          tasksForColumn={tasksForColumn}
         />
       </Flex>
     </GridItem>

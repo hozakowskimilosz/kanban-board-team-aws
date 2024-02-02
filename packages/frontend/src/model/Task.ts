@@ -1,11 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
-
 class Task {
   public id: string;
   public name: string;
   public description: string;
   public columnId: number;
-  public order: number
+  public order: number;
 
   constructor(
     columnId: number,
@@ -14,7 +12,7 @@ class Task {
     order: number,
     id?: string
   ) {
-    this.id = id ?? ""
+    this.id = id ?? "";
     this.columnId = columnId;
     this.name = name;
     this.description = description;
