@@ -4,9 +4,9 @@ Welcome to the repository of our web application, a Kanban board built on Amazon
 
 This project is a collaborative effort by a team of three developers. You can check out their individual GitHub profiles via the links provided below:
 
-- [Developer 1](https://github.com/developer1)
-- [Developer 2](https://github.com/developer2)
-- [Developer 3](https://github.com/developer3)
+- [Miłosz](https://github.com/hozakowskimilosz)
+- [Julian](https://github.com/RybazPolski)
+- [Piotrek](https://github.com/ArrogantPeter)
 
 You can also check out a live demo of the application [here](https://awsomekanban.cognifidecloud.net/).
 
